@@ -1,0 +1,188 @@
+package com.google.common.base;
+
+import com.google.common.annotations.GwtCompatible;
+import com.google.errorprone.annotations.ForOverride;
+import java.io.Serializable;
+import org.checkerframework.checker.nullness.compatqual.NullableDecl;
+@GwtCompatible
+/* loaded from: classes2.dex */
+public abstract class Equivalence<T> {
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    /* loaded from: classes2.dex */
+    public static final class Equals extends Equivalence<Object> implements Serializable {
+
+        /* renamed from: a  reason: collision with root package name */
+        static final Equals f8137a = new Equals();
+        private static final long serialVersionUID = 1;
+
+        Equals() {
+        }
+
+        private Object readResolve() {
+            return f8137a;
+        }
+
+        @Override // com.google.common.base.Equivalence
+        protected boolean a(Object obj, Object obj2) {
+            return obj.equals(obj2);
+        }
+
+        @Override // com.google.common.base.Equivalence
+        protected int b(Object obj) {
+            return obj.hashCode();
+        }
+    }
+
+    /* loaded from: classes2.dex */
+    private static final class EquivalentToPredicate<T> implements Predicate<T>, Serializable {
+        private static final long serialVersionUID = 0;
+        private final Equivalence<T> equivalence;
+        @NullableDecl
+        private final T target;
+
+        /* JADX WARN: Multi-variable type inference failed */
+        EquivalentToPredicate(Equivalence equivalence, @NullableDecl Object obj) {
+            this.equivalence = (Equivalence) Preconditions.checkNotNull(equivalence);
+            this.target = obj;
+        }
+
+        @Override // com.google.common.base.Predicate
+        public boolean apply(@NullableDecl T t2) {
+            return this.equivalence.equivalent(t2, this.target);
+        }
+
+        @Override // com.google.common.base.Predicate
+        public boolean equals(@NullableDecl Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj instanceof EquivalentToPredicate) {
+                EquivalentToPredicate equivalentToPredicate = (EquivalentToPredicate) obj;
+                return this.equivalence.equals(equivalentToPredicate.equivalence) && Objects.equal(this.target, equivalentToPredicate.target);
+            }
+            return false;
+        }
+
+        public int hashCode() {
+            return Objects.hashCode(this.equivalence, this.target);
+        }
+
+        public String toString() {
+            return this.equivalence + ".equivalentTo(" + this.target + ")";
+        }
+    }
+
+    /* loaded from: classes2.dex */
+    static final class Identity extends Equivalence<Object> implements Serializable {
+
+        /* renamed from: a  reason: collision with root package name */
+        static final Identity f8138a = new Identity();
+        private static final long serialVersionUID = 1;
+
+        Identity() {
+        }
+
+        private Object readResolve() {
+            return f8138a;
+        }
+
+        @Override // com.google.common.base.Equivalence
+        protected boolean a(Object obj, Object obj2) {
+            return false;
+        }
+
+        @Override // com.google.common.base.Equivalence
+        protected int b(Object obj) {
+            return System.identityHashCode(obj);
+        }
+    }
+
+    /* loaded from: classes2.dex */
+    public static final class Wrapper<T> implements Serializable {
+        private static final long serialVersionUID = 0;
+        private final Equivalence<? super T> equivalence;
+        @NullableDecl
+        private final T reference;
+
+        private Wrapper(Equivalence<? super T> equivalence, @NullableDecl T t2) {
+            this.equivalence = (Equivalence) Preconditions.checkNotNull(equivalence);
+            this.reference = t2;
+        }
+
+        public boolean equals(@NullableDecl Object obj) {
+            if (obj == this) {
+                return true;
+            }
+            if (obj instanceof Wrapper) {
+                Wrapper wrapper = (Wrapper) obj;
+                if (this.equivalence.equals(wrapper.equivalence)) {
+                    return this.equivalence.equivalent((T) this.reference, (T) wrapper.reference);
+                }
+                return false;
+            }
+            return false;
+        }
+
+        @NullableDecl
+        public T get() {
+            return this.reference;
+        }
+
+        public int hashCode() {
+            return this.equivalence.hash((T) this.reference);
+        }
+
+        public String toString() {
+            return this.equivalence + ".wrap(" + this.reference + ")";
+        }
+    }
+
+    public static Equivalence<Object> equals() {
+        return Equals.f8137a;
+    }
+
+    public static Equivalence<Object> identity() {
+        return Identity.f8138a;
+    }
+
+    @ForOverride
+    protected abstract boolean a(Object obj, Object obj2);
+
+    @ForOverride
+    protected abstract int b(Object obj);
+
+    public final boolean equivalent(@NullableDecl T t2, @NullableDecl T t3) {
+        if (t2 == t3) {
+            return true;
+        }
+        if (t2 == null || t3 == null) {
+            return false;
+        }
+        return a(t2, t3);
+    }
+
+    public final Predicate<T> equivalentTo(@NullableDecl T t2) {
+        return new EquivalentToPredicate(this, t2);
+    }
+
+    public final int hash(@NullableDecl T t2) {
+        if (t2 == null) {
+            return 0;
+        }
+        return b(t2);
+    }
+
+    public final <F> Equivalence<F> onResultOf(Function<F, ? extends T> function) {
+        return new FunctionalEquivalence(function, this);
+    }
+
+    @GwtCompatible(serializable = true)
+    public final <S extends T> Equivalence<Iterable<S>> pairwise() {
+        return new PairwiseEquivalence(this);
+    }
+
+    public final <S extends T> Wrapper<S> wrap(@NullableDecl S s2) {
+        return new Wrapper<>(s2);
+    }
+}

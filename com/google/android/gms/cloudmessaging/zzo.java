@@ -1,0 +1,26 @@
+package com.google.android.gms.cloudmessaging;
+
+import android.os.Bundle;
+/* loaded from: classes.dex */
+final class zzo extends zzp<Void> {
+    /* JADX INFO: Access modifiers changed from: package-private */
+    public zzo(int i2, int i3, Bundle bundle) {
+        super(i2, 2, bundle);
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    @Override // com.google.android.gms.cloudmessaging.zzp
+    public final void a(Bundle bundle) {
+        if (bundle.getBoolean("ack", false)) {
+            d(null);
+        } else {
+            c(new zzq(4, "Invalid response to one way request", null));
+        }
+    }
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    @Override // com.google.android.gms.cloudmessaging.zzp
+    public final boolean b() {
+        return true;
+    }
+}

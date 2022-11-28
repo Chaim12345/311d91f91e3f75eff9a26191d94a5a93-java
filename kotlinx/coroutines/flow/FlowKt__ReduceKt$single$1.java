@@ -1,0 +1,34 @@
+package kotlinx.coroutines.flow;
+
+import kotlin.coroutines.Continuation;
+import kotlin.coroutines.jvm.internal.ContinuationImpl;
+import kotlin.coroutines.jvm.internal.DebugMetadata;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+/* JADX INFO: Access modifiers changed from: package-private */
+@DebugMetadata(c = "kotlinx.coroutines.flow.FlowKt__ReduceKt", f = "Reduce.kt", i = {0}, l = {57}, m = "single", n = {"result"}, s = {"L$0"})
+/* loaded from: classes3.dex */
+public final class FlowKt__ReduceKt$single$1<T> extends ContinuationImpl {
+
+    /* renamed from: a  reason: collision with root package name */
+    Object f11976a;
+
+    /* renamed from: b  reason: collision with root package name */
+    /* synthetic */ Object f11977b;
+
+    /* renamed from: c  reason: collision with root package name */
+    int f11978c;
+
+    /* JADX INFO: Access modifiers changed from: package-private */
+    public FlowKt__ReduceKt$single$1(Continuation continuation) {
+        super(continuation);
+    }
+
+    @Override // kotlin.coroutines.jvm.internal.BaseContinuationImpl
+    @Nullable
+    public final Object invokeSuspend(@NotNull Object obj) {
+        this.f11977b = obj;
+        this.f11978c |= Integer.MIN_VALUE;
+        return FlowKt.single(null, this);
+    }
+}
